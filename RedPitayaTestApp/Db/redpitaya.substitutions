@@ -1,0 +1,57 @@
+# $File: //ASP/tec/daq/RedPitaya/trunk/RedPitayaTestApp/Db/redpitaya.substitutions $
+# $Revision: #2 $
+# $DateTime: 2017/06/05 10:06:58 $
+# Last checked in by: $Author: pozara $
+#
+# Description
+# Substitution file for RedPitaya.
+#
+# Copyright (c) 2016 Australian Synchrotron
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# Licence as published by the Free Software Foundation; either
+# version 2.1 of the Licence, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public Licence for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# Licence along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+# Contact details:
+# andraz.pozar@synchrotron.org.au
+# 800 Blackburn Road, Clayton, Victoria 3168, Australia.
+#
+
+file "db/redpitaya_general.template"
+{
+   pattern  {DEVICE,    PORT}
+            {SR00RPA01, RP01}
+}
+
+file "db/redpitaya_digital_pin.template"
+{
+   pattern  {DEVICE,    PORT, PIN}
+            {SR00RPA01, RP01, 0  }
+            {SR00RPA01, RP01, 1  }
+            {SR00RPA01, RP01, 2  }
+            {SR00RPA01, RP01, 3  }
+            {SR00RPA01, RP01, 4  }
+            {SR00RPA01, RP01, 5  }
+            {SR00RPA01, RP01, 6  }
+            {SR00RPA01, RP01, 7  }
+}
+
+file "db/redpitaya_analog_pin.template"
+{
+   pattern  {DEVICE,    PORT, PIN}
+            {SR00RPA01, RP01, 0  }
+            {SR00RPA01, RP01, 1  }
+            {SR00RPA01, RP01, 2  }
+            {SR00RPA01, RP01, 3  }
+}
+            

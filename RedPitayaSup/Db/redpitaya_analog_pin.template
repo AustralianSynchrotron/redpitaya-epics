@@ -1,0 +1,92 @@
+# $File: //ASP/tec/daq/RedPitaya/trunk/RedPitayaSup/Db/redpitaya_analog_pin.template $
+# $Revision: #2 $
+# $DateTime: 2017/06/05 10:06:58 $
+# Last checked in by: $Author: pozara $
+#
+# Description:
+#
+# Formal template parameters:
+# DEVICE - base PV name, e.g. SR08FPS01
+# PORT   - the ASYN port, e.g. "L108".
+# PIN    - Pin number: 0-3
+#
+# Copyright (c) 2018  Australian Synchrotron
+#
+# All rights reserved.
+# 
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+# 
+# * Redistributions of source code must retain the above copyright notice, this
+#   list of conditions and the following disclaimer.
+# 
+# * Redistributions in binary form must reproduce the above copyright notice,
+#   this list of conditions and the following disclaimer in the documentation
+#   and/or other materials provided with the distribution.
+# 
+# * Neither the name of the copyright holder nor the names of its
+#   contributors may be used to endorse or promote products derived from
+#   this software without specific prior written permission.
+# 
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+# Contact details:
+# andraz.pozar@synchrotron.org.au
+# 800 Blackburn Road, Clayton, Victoria 3168, Australia.
+#
+
+record (ao, "$(DEVICE):ANALOG_OUT_$(PIN)_VOLT_SP") {
+   field (DESC, "Analog pin $(PIN) voltage SP")
+   field (SCAN, "Passive")
+   field (DTYP, "asynFloat64")
+   field (OUT,  "@asyn($(PORT), $(PIN), 0) APOUTSTATE")
+
+   field (PREC, "3")
+   field (ADEL, "0.001")
+
+   field (DRVH, "1.8")
+   field (DRVL, "0")
+   field (EGU,  "V")
+}
+
+record (ai, "$(DEVICE):ANALOG_OUT_$(PIN)_VOLT_MONITOR") {
+   field (DESC, "Analog output pin $(PIN) voltage monitor")
+   field (SCAN, "1 second")
+   field (DTYP, "asynFloat64")
+   field (INP,  "@asyn($(PORT), $(PIN), 0) APOUTSTATE")
+
+   field (PREC, "3")
+   field (ADEL, "0.001")
+
+   field (EGU,  "V")
+   field (HIHI, "1.801")
+   field (HHSV, "MAJOR")
+   field (LOPR, "0.0")
+   field (HOPR, "1.8")
+   field (FLNK, "$(DEVICE):ANALOG_IN_$(PIN)_VOLT_MONITOR")
+}
+
+record (ai, "$(DEVICE):ANALOG_IN_$(PIN)_VOLT_MONITOR") {
+   field (DESC, "Analog input pin $(PIN) voltage monitor")
+   field (SCAN, "Passive")
+   field (DTYP, "asynFloat64")
+   field (INP,  "@asyn($(PORT), $(PIN), 0) APINSTATE")
+
+   field (PREC, "3")
+   field (ADEL, "0.001")
+
+   field (EGU,  "V")
+   field (LOPR, "0.0")
+   field (HOPR, "3.3")
+   field (HIHI, "3.301")
+   field (HHSV, "MAJOR")   
+}

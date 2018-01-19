@@ -1,0 +1,177 @@
+# $File: //ASP/tec/daq/RedPitaya/trunk/RedPitayaSup/Db/redpitaya_digital_pin.template $
+# $Revision: #2 $
+# $DateTime: 2017/06/05 10:06:58 $
+# Last checked in by: $Author: pozara $
+#
+# Description:
+#
+# Formal template parameters:
+# DEVICE       - base PV name, e.g. SR0ORPA01
+# PORT         - the ASYN port, e.g. "L108".
+# PIN          - Pin number (0-7)
+#
+# Copyright (c) 2018  Australian Synchrotron
+#
+# All rights reserved.
+# 
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+# 
+# * Redistributions of source code must retain the above copyright notice, this
+#   list of conditions and the following disclaimer.
+# 
+# * Redistributions in binary form must reproduce the above copyright notice,
+#   this list of conditions and the following disclaimer in the documentation
+#   and/or other materials provided with the distribution.
+# 
+# * Neither the name of the copyright holder nor the names of its
+#   contributors may be used to endorse or promote products derived from
+#   this software without specific prior written permission.
+# 
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+# Contact details:
+# andraz.pozar@synchrotron.org.au
+# 800 Blackburn Road, Clayton, Victoria 3168, Australia.
+#
+
+# Digital pin N direction (input/output) set
+#
+record (bo, "$(DEVICE):DIGITAL_N_$(PIN)_DIR_CMD") {
+   field (DESC, "Pin N_$(PIN) direction command")
+   field (SCAN, "Passive")
+   field (DTYP, "asynInt32")
+   field (OUT,  "@asyn($(PORT), $(PIN), 0) NDPDIR")
+   field (ZNAM, "Input")
+   field (ONAM, "Output")
+}
+
+# Digital pin N direction (input/output) read back
+#
+record (bi, "$(DEVICE):DIGITAL_N_$(PIN)_DIR_STATUS") {
+   field (DESC, "Pin N_$(PIN) direction status")
+   field (SCAN, "1 second")
+   field (DTYP, "asynInt32")
+   field (INP,  "@asyn($(PORT), $(PIN), 0) NDPDIR")
+   field (ZNAM, "Input")
+   field (ONAM, "Output")
+   field (FLNK, "$(DEVICE):DIGITAL_P_$(PIN)_DIR_STATUS")
+}
+
+# Digital pin P direction (input/output) set
+#
+record (bo, "$(DEVICE):DIGITAL_P_$(PIN)_DIR_CMD") {
+   field (DESC, "Pin P_$(PIN) direction command")
+   field (SCAN, "Passive")
+   field (DTYP, "asynInt32")
+   field (OUT,  "@asyn($(PORT), $(PIN), 0) PDPDIR")
+   field (ZNAM, "Input")
+   field (ONAM, "Output")
+}
+
+# Digital pin P direction (input/output) read back
+#
+record (bi, "$(DEVICE):DIGITAL_P_$(PIN)_DIR_STATUS") {
+   field (DESC, "Pin P_$(PIN) direction status")
+   field (SCAN, "Passive")
+   field (DTYP, "asynInt32")
+   field (INP,  "@asyn($(PORT), $(PIN), 0) PDPDIR")
+   field (ZNAM, "Input")
+   field (ONAM, "Output")
+   field (FLNK, "$(DEVICE):DIGITAL_N_$(PIN)_STATE_STATUS")
+}
+
+# Digital pin N state set (1: HIGH, 0: LOW)
+#
+record (bo, "$(DEVICE):DIGITAL_N_$(PIN)_STATE_CMD") {
+   field (DESC, "Pin N_$(PIN) state command")
+   field (SCAN, "Passive")
+   field (DTYP, "asynInt32")
+   field (OUT,  "@asyn($(PORT), $(PIN), 0) NDPSTATE")
+   field (ZNAM, "Low")
+   field (ONAM, "High")
+   field (DISV, "0")
+   
+   # If this is an input pin, the state can't be set
+   # therefore the record is disabled in this case and set to
+   # INVALID, if the user wants to set it.
+   #
+   field (SDIS, "$(DEVICE):DIGITAL_N_$(PIN)_DIR_STATUS")
+   field (DISS, "INVALID")
+}
+
+# Digital pin P state set (1: HIGH, 0: LOW)
+#
+record (bo, "$(DEVICE):DIGITAL_P_$(PIN)_STATE_CMD") {
+   field (DESC, "Pin P_$(PIN) state command")
+   field (SCAN, "Passive")
+   field (DTYP, "asynInt32")
+   field (OUT,  "@asyn($(PORT), $(PIN), 0) PDPSTATE")
+   field (ZNAM, "Low")
+   field (ONAM, "High")  
+    
+   # If the this is an input pin, the state can't be set
+   # therefore the record is disabled in this case and set to
+   # INVALID, if the user wants to set it.
+   #
+   field (DISV, "0")
+   field (SDIS, "$(DEVICE):DIGITAL_P_$(PIN)_DIR_STATUS")
+   field (DISS, "INVALID")
+}
+
+# State of a digital output N 1: HIGH, 0: LOW
+#
+record (bi, "$(DEVICE):DIGITAL_N_$(PIN)_STATE_STATUS") {
+   field (DESC, "Pin N_$(PIN) state status")
+   field (SCAN, "Passive")
+   field (DTYP, "asynInt32")
+   field (INP,  "@asyn($(PORT), $(PIN), 0) NDPSTATE")
+   field (ZNAM, "Low")
+   field (ONAM, "High")
+   field (FLNK, "$(DEVICE):DIGITAL_P_$(PIN)_STATE_STATUS")
+}
+
+# State of a digital output P 1: HIGH, 0: LOW
+#
+record (bi, "$(DEVICE):DIGITAL_P_$(PIN)_STATE_STATUS") {
+   field (DESC, "Pin P_$(PIN) state status")
+   field (SCAN, "Passive")
+   field (DTYP, "asynInt32")
+   field (INP,  "@asyn($(PORT), $(PIN), 0) PDPSTATE")
+   field (ZNAM, "Low")
+   field (ONAM, "High")
+   field (FLNK, "$(DEVICE):LED$(PIN)_STATE_STATUS")
+}
+
+# State of a LED command
+#
+record (bo, "$(DEVICE):LED$(PIN)_STATE_CMD") {
+   field (DESC, "LED_$(PIN) state command")
+   field (SCAN, "Passive")
+   field (DTYP, "asynInt32")
+   field (OUT,  "@asyn($(PORT), $(PIN), 0) LEDSTATE")
+   field (VAL,  "0")
+   field (ZNAM, "Off")
+   field (ONAM, "On")
+}
+
+# State of a LED status
+# 
+record (bi, "$(DEVICE):LED$(PIN)_STATE_STATUS") {
+   field (DESC, "LED_$(PIN) state status")
+   field (SCAN, "Passive")
+   field (DTYP, "asynInt32")
+   field (INP,  "@asyn($(PORT), $(PIN), 0) LEDSTATE")
+   field (VAL,  "0")
+   field (ZNAM, "Off")
+   field (ONAM, "On")
+}

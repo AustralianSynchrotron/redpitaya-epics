@@ -1,0 +1,571 @@
+# $File: //ASP/tec/daq/RedPitaya/trunk/RedPitayaSup/Db/redpitaya_general.template $
+# $Revision: #3 $
+# $DateTime: 2017/06/05 10:06:58 $
+# Last checked in by: $Author: pozara $
+#
+# Description:
+#
+# Formal template parameters:
+# DEVICE - base PV name, e.g. SR0ORPA01
+# PORT   - the ASYN port, e.g. "L108".
+#
+# Copyright (c) 2018  Australian Synchrotron
+#
+# All rights reserved.
+# 
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+# 
+# * Redistributions of source code must retain the above copyright notice, this
+#   list of conditions and the following disclaimer.
+# 
+# * Redistributions in binary form must reproduce the above copyright notice,
+#   this list of conditions and the following disclaimer in the documentation
+#   and/or other materials provided with the distribution.
+# 
+# * Neither the name of the copyright holder nor the names of its
+#   contributors may be used to endorse or promote products derived from
+#   this software without specific prior written permission.
+# 
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+# Contact details:
+# andraz.pozar@synchrotron.org.au
+# 800 Blackburn Road, Clayton, Victoria 3168, Australia.
+#
+
+#-------------------------------------------------------------------------------
+# Static info - with short delay.
+#
+record (seq, "$(DEVICE):STATIC_PINI") {
+   field (DESC, "Trigger read once only PVs.")
+   field (SCAN, "Passive")
+   field (PINI, "YES")
+   field (DOL1, "1")
+   field (DLY1, "1.0")
+   field (LNK1, "$(DEVICE):DRIVER_VERSION.PROC PP")
+}
+
+# Driver version info
+#
+record (stringin, "$(DEVICE):DRIVER_VERSION") {
+   field (DESC, "EPICS device driver version")
+   field (SCAN, "Passive")
+   field (DTYP, "asynOctetRead")
+   field (INP,  "@asyn($(PORT)) DRVVER")
+}
+
+# Data monitor for source 1
+#
+record (waveform, "$(DEVICE):CHANNEL_IN_01_MONITOR") {
+   field (DESC, "Channel in 1 data")
+   field (SCAN, "I/O Intr")
+   field (DTYP, "asynFloat64ArrayIn")
+   field (INP,  "@asyn($(PORT),0,0.0) DATA")
+   field (FTVL, "DOUBLE")
+   field (NELM, "16354")
+   field (EGU,  "")
+   field (PREC, "5")
+   field (LOPR, "-20.0")
+   field (HOPR, "20.0")
+}
+
+# Data monitor for source 2
+#
+record (waveform, "$(DEVICE):CHANNEL_IN_02_MONITOR") {
+   field (DESC, "Channel in 2 data")
+   field (SCAN, "I/O Intr")
+   field (DTYP, "asynFloat64ArrayIn")
+   field (INP,  "@asyn($(PORT),1,0.0) DATA")
+   field (FTVL, "DOUBLE")
+   field (NELM, "16354")
+   field (EGU,  "")
+   field (PREC, "5")
+   field (LOPR, "-20.0")
+   field (HOPR, "20.0")
+}
+
+# Acquisition status
+#
+record (bi, "$(DEVICE):ACQUISITION_STATUS") {
+   field (DESC, "Acquisition status")
+   field (SCAN, "1 second")
+   
+   field (DTYP, "asynInt32")
+   field (INP,  "@asyn($(PORT), 0, 0.0) ACQSTAT")
+   field (ZNAM, "Stopped")
+   field (ONAM, "Acquiring")
+   
+   field (FLNK, "$(DEVICE):TRIGGER_HYST_MONITOR")
+}
+
+# Time between two consecutive data reads
+#
+record (ao, "$(DEVICE):ACQISITION_SLEEP_SP") {
+   field (DESC, "Acquisition rate SP")
+   field (SCAN, "Passive")
+   
+   field (DTYP, "asynFloat64")
+   field (OUT,  "@asyn($(PORT), 0, 0.0) ACQRATE")
+   
+   field (EGU,  "s")
+   field (DRVL, "0.0")
+   field (DRVH, "60.0")
+}
+
+# Acquisition trigger hysteresis
+#
+record (ao, "$(DEVICE):TRIGGER_HYST_SP") {
+   field (DESC, "Trigger hysteresis SP")
+   field (SCAN, "Passive")
+   
+   field (DTYP, "asynFloat64")
+   field (OUT,  "@asyn($(PORT), 0, 0.0) ACQTRIGHYST")
+   
+   field (EGU,  "V")
+   field (DRVL, "0.0")
+   field (DRVH, "1.0")
+}
+
+# Acquisition trigger hysteresis
+#
+record (ai, "$(DEVICE):TRIGGER_HYST_MONITOR") {
+   field (DESC, "Trigger hysteresis monitor")
+   field (SCAN, "Passive")
+   
+   field (DTYP, "asynFloat64")
+   field (INP,  "@asyn($(PORT), 0, 0.0) ACQTRIGHYST")
+   
+   field (EGU,  "V")
+   field (LOPR, "0.0")
+   field (HOPR, "1.0")
+   
+   field (FLNK, "$(DEVICE):DECIMATION_STATUS")
+}
+
+# Start continous acqusition
+#
+record (bo, "$(DEVICE):START_CONT_ACQUISITION_CMD") {
+   field (DESC, "Start acquisition")
+   field (SCAN, "Passive")
+   field (DTYP, "asynInt32")
+   field (OUT,  "@asyn($(PORT),0,0) CACQSTART")
+   field (VAL,  "0")
+   field (HIGH, "0.5")                          # keep high for 0.5s)
+}
+
+# Start single shot acqusition
+#
+record (bo, "$(DEVICE):START_SS_ACQUISITION_CMD") {
+   field (DESC, "Start acquisition")
+   field (SCAN, "Passive")
+   field (DTYP, "asynInt32")
+   field (OUT,  "@asyn($(PORT),0,0) SACQSTART")
+   field (VAL,  "0")
+   field (HIGH, "0.5")                          # keep high for 0.5s)
+}
+
+# Stop acquisition
+#
+record (bo, "$(DEVICE):STOP_ACQUISITION_CMD") {
+   field (DESC, "Stop acquisition")
+   field (SCAN, "Passive")
+   field (DTYP, "asynInt32")
+   field (OUT,  "@asyn($(PORT),0,0.0) ACQSTOP")
+   field (VAL,  "0")
+   field (HIGH, "0.5")                          # keep high for 0.5s
+}
+
+# Reset acquisition
+#
+record (bo, "$(DEVICE):RESET_ACQUISITION_CMD") {
+   field (DESC, "Reset acquisition")
+   field (SCAN, "Passive")
+   field (DTYP, "asynInt32")
+   field (OUT,  "@asyn($(PORT),0,0.0) ACQRST")
+   field (VAL,  "0")
+   field (HIGH, "0.5")                          # keep high for 0.5s
+}
+
+# Acquisition decimation command
+#
+record (mbbo, "$(DEVICE):DECIMATION_CMD") {
+   field (DESC, "Acquisiton decimation command")
+   field (SCAN, "Passive")
+   field (DTYP, "asynInt32")
+   field (OUT,  "@asyn($(PORT), 0, 0.0) ACQDEC")
+   
+   field (ZRVL, "0")
+   field (ZRST, "1")
+   
+   field (ONVL, "1")
+   field (ONST, "8")
+   
+   field (TWVL, "2")
+   field (TWST, "64")
+   
+   field (THVL, "3")
+   field (THST, "1024")
+   
+   field (FRVL, "4")
+   field (FRST, "8192")
+   
+   field (FVVL, "5")
+   field (FVST, "65536")
+   
+   field (UNSV, "INVALID")
+}
+
+# Acquisiton decimation status
+#
+record (mbbi, "$(DEVICE):DECIMATION_STATUS") {
+   field (DESC, "Acquisiton decimation status")
+   field (SCAN, "Passive")
+
+   field (DTYP, "asynInt32")
+   field (INP,  "@asyn($(PORT), 0, 0.0) ACQDEC")
+   
+   field (ZRVL, "0")
+   field (ZRST, "1")
+   
+   field (ONVL, "1")
+   field (ONST, "8")
+   
+   field (TWVL, "2")
+   field (TWST, "64")
+   
+   field (THVL, "3")
+   field (THST, "1024")
+   
+   field (FRVL, "4")
+   field (FRST, "8192")
+   
+   field (FVVL, "5")
+   field (FVST, "65536")
+   
+   field (UNSV, "INVALID")
+   
+   field (FLNK, "$(DEVICE):SAMPLING_RATE_STATUS")
+}
+
+# Acquisiton sampling rate command
+#
+record (mbbo, "$(DEVICE):SAMPLING_RATE_CMD") {
+   field (DESC, "Sampling rate command")
+   field (SCAN, "Passive")
+   field (DTYP, "asynInt32")
+   field (OUT,  "@asyn($(PORT), 0, 0.0) ACQSRAT")
+
+   field (ZRST, "125 MHz")
+   field (ZRVL, "0")
+
+   field (ONST, "15.6 MHz")
+   field (ONVL, "1")
+
+   field (TWST, "1.9 MHz")
+   field (TWVL, "2")
+
+   field (THST, "103.8 kHz")
+   field (THVL, "3")
+
+   field (FRST, "15.2 kHz")
+   field (FRVL, "4")
+
+   field (FVST, "1.9 kHz")
+   field (FVVL, "5")
+
+   field (UNSV, "INVALID")
+}
+
+record (mbbi, "$(DEVICE):SAMPLING_RATE_STATUS") {
+   field (DESC, "Sampling rate status")
+   field (SCAN, "Passive")
+   field (DTYP, "asynInt32")
+   field (INP,  "@asyn($(PORT), 0, 0.0) ACQSRAT")
+
+   field (ZRST, "125 MHz")
+   field (ZRVL, "0")
+
+   field (ONST, "15.6 MHz")
+   field (ONVL, "1")
+
+   field (TWST, "1.9 MHz")
+   field (TWVL, "2")
+
+   field (THST, "103.8 kHz")
+   field (THVL, "3")
+
+   field (FRST, "15.2 kHz")
+   field (FRVL, "4")
+
+   field (FVST, "1.9 kHz")
+   field (FVVL, "5")
+
+   field (UNSV, "INVALID")
+
+   field (FLNK, "$(DEVICE):AVERAGING_STATUS")
+}
+
+# Disable/enable averaging command
+#
+record (bo, "$(DEVICE):AVERAGING_CMD") {
+   field (DESC, "Enable/disable averaging")
+   field (SCAN, "Passive")
+   field (DTYP, "asynInt32")
+   field (OUT,  "@asyn($(PORT), 0, 0.0) ACQAVG")
+   field (ZNAM, "Off")
+   field (ONAM, "On")
+}
+
+# Disabled/enabled averaging status
+#
+record (bi, "$(DEVICE):AVERAGING_STATUS") {
+   field (DESC, "Enable/disable averaging")
+   field (SCAN, "Passive")
+   
+   field (DTYP, "asynInt32")
+   field (INP,  "@asyn($(PORT), 0, 0.0) ACQAVG")
+   field (ZNAM, "Off")
+   field (ONAM, "On")
+   
+   field (FLNK, "$(DEVICE):TRIGGER_SRC_STATUS")
+}
+
+# Set trigger source
+#
+record (mbbo, "$(DEVICE):TRIGGER_SRC_CMD") {
+   field (DESC, "Acquisiton trigger command")
+   field (SCAN, "Passive")
+   field (DTYP, "asynInt32")
+   field (OUT,  "@asyn($(PORT), 0, 0.0) ACQTRIGSRC")
+   
+   field (ZRST, "DISABLED")
+   field (ZRVL, "0")
+   
+   field (ONST, "NOW")
+   field (ONVL, "1")
+   
+   field (TWST, "CH1_PE")
+   field (TWVL, "2")
+   
+   field (THST, "CH1_NE")
+   field (THVL, "3")
+   
+   field (FRST, "CH2_PE")
+   field (FRVL, "4")
+   
+   field (FVST, "CH2_NE")
+   field (FVVL, "5")
+   
+   field (SXST, "EXT_PE")
+   field (SXVL, "6")
+   
+   field (SVST, "EXT_NE")
+   field (SVVL, "7")
+   
+   field (EIST, "AWG_PE")
+   field (EIVL, "8")
+   
+   field (NIST, "AWG_NE")
+   field (NIVL, "9")
+   
+   field (UNSV, "INVALID")
+}
+
+# Set trigger source
+#
+record (mbbi, "$(DEVICE):TRIGGER_SRC_STATUS") {
+   field (DESC, "Acquisiton trigger command")
+   field (SCAN, "Passive")
+   field (DTYP, "asynInt32")
+   field (INP,  "@asyn($(PORT), 0, 0.0) ACQTRIGSRC")
+   
+   field (ZRST, "DISABLED")
+   field (ZRVL, "0")
+   
+   field (ONST, "NOW")
+   field (ONVL, "1")
+   
+   field (TWST, "CH1_PE")
+   field (TWVL, "2")
+   
+   field (THST, "CH1_NE")
+   field (THVL, "3")
+   
+   field (FRST, "CH2_PE")
+   field (FRVL, "4")
+   
+   field (FVST, "CH2_NE")
+   field (FVVL, "5")
+   
+   field (SXST, "EXT_PE")
+   field (SXVL, "6")
+   
+   field (SVST, "EXT_NE")
+   field (SVVL, "7")
+   
+   field (EIST, "AWG_PE")
+   field (EIVL, "8")
+   
+   field (NIST, "AWG_NE")
+   field (NIVL, "9")
+   
+   field (UNSV, "INVALID")
+   
+   field (FLNK, "$(DEVICE):TRIGGER_STATUS")
+}
+
+# Get trigger state
+#
+record (bi, "$(DEVICE):TRIGGER_STATUS") {
+   field (DESC, "Acquisiton trigger state")
+   field (SCAN, "Passive")
+   
+   field (DTYP, "asynInt32")
+   field (INP,  "@asyn($(PORT), 0, 0.0) ACQTRIGSTATE")
+   field (ZNAM, "Triggered")
+   field (ONAM, "Waiting")
+   
+   field (FLNK, "$(DEVICE):TRIGGER_DELAY_MONITOR")
+}
+
+# Set acquisition trigger delay
+#
+record (longout, "$(DEVICE):TRIGGER_DELAY_SP") {
+   field (DESC, "Acquisition trigger delay")
+   field (SCAN, "Passive")
+   
+   field (DTYP, "asynInt32")
+   field (OUT,  "@asyn($(PORT), 0, 0.0) ACQTRIGDLY")
+   
+   field (EGU,  "ns")
+   field (DRVH, "10000")
+   field (DRVL, "0")
+}
+
+# Acquisition trigger delay moinitor
+#
+record (longin, "$(DEVICE):TRIGGER_DELAY_MONITOR") {
+   field (DESC, "Acquisition trigger delay monitor")
+   field (SCAN, "Passive")
+   
+   field (DTYP, "asynInt32")
+   field (INP,  "@asyn($(PORT), 0, 0.0) ACQTRIGDLY")
+   
+   field (EGU,  "ns")
+   field (HOPR, "10000")
+   field (LOPR, "0")
+   
+   field (FLNK, "$(DEVICE):CHANNEL_IN_01_GAIN_STATUS")
+}
+
+# Acquisition source gain for channel 1
+#
+record (bo, "$(DEVICE):CHANNEL_IN_01_GAIN_CMD") {
+   field (DESC, "Channel in 1 gain")
+   field (SCAN, "Passive")
+   
+   field (DTYP, "asynInt32")
+   field (OUT,  "@asyn($(PORT), 0, 0.0) ACQGAIN")
+   
+   field (VAL,  "0")
+   field (ZNAM, "LOW")
+   field (ONAM, "HIGH")
+}
+
+# Acquisition source gain for channel 2
+#
+record (bo, "$(DEVICE):CHANNEL_IN_02_GAIN_CMD") {
+   field (DESC, "Channel in 2 gain")
+   field (SCAN, "Passive")
+   
+   field (DTYP, "asynInt32")
+   field (OUT,  "@asyn($(PORT), 1, 0.0) ACQGAIN")
+   
+   field (VAL,  "0")
+   field (ZNAM, "LOW")
+   field (ONAM, "HIGH")
+}
+
+# Acquisition source gain for channel 1
+#
+record (bi, "$(DEVICE):CHANNEL_IN_01_GAIN_STATUS") {
+   field (DESC, "Channel in 1 gain")
+   field (SCAN, "Passive")
+   
+   field (DTYP, "asynInt32")
+   field (INP,  "@asyn($(PORT), 0, 0.0) ACQGAIN")
+   
+   field (VAL,  "0")
+   field (ZNAM, "LOW")
+   field (ONAM, "HIGH")
+   
+   field (FLNK, "$(DEVICE):CHANNEL_IN_02_GAIN_STATUS")
+}
+
+# Acquisition source gain for channel 2
+#
+record (bi, "$(DEVICE):CHANNEL_IN_02_GAIN_STATUS") {
+   field (DESC, "Channel in 2 gain")
+   field (SCAN, "Passive")
+   
+   field (DTYP, "asynInt32")
+   field (INP,  "@asyn($(PORT), 1, 0.0) ACQGAIN")
+   
+   field (VAL,  "0")
+   field (ZNAM, "LOW")
+   field (ONAM, "HIGH")
+   
+   field (FLNK, "$(DEVICE):TRIGGER_LEVEL_MONITOR")
+}
+
+# Acquisition trigger level set
+#
+record (ao, "$(DEVICE):TRIGGER_LEVEL_SP") {
+   field (DESC, "Acquisition trigger level SP")
+   field (SCAN, "Passive")
+   
+   field (DTYP, "asynFloat64")
+   field (OUT,  "@asyn($(PORT), 0, 0.0) ACQTRIGLVL")
+   
+   field (EGU,  "V")
+   field (DRVL, "-20.0")
+   field (DRVH, "20.0")
+}
+
+# Acquisition trigger level monitor
+#
+record (ai, "$(DEVICE):TRIGGER_LEVEL_MONITOR") {
+   field (DESC, "Acquisition trigger level monitor")
+   field (SCAN, "Passive")
+   
+   field (DTYP, "asynFloat64")
+   field (INP,  "@asyn($(PORT), 0, 0.0) ACQTRIGLVL")
+   
+   field (EGU,  "V")
+   field (LOPR, "0.0")
+   field (HOPR, "1.0")
+   
+   field (FLNK, "$(DEVICE):BUFFER_SIZE_MONITOR")
+}
+
+# Acquisition buffer size
+#
+record (longin, "$(DEVICE):BUFFER_SIZE_MONITOR") {
+   field (DESC, "Acquisition buffer size")
+   field (SCAN, "Passive")
+   
+   field (DTYP, "asynInt32")
+   field (INP,  "@asyn($(PORT), 0, 0.0) ACQBUFF")
+}
+
+# end
