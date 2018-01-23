@@ -62,6 +62,7 @@ This paragraph assumes you're running the IOC from RedPitayaTestApp.
 ### Records Explanation
 
 **Acquisition start/stop records:**
+
 | Record Name                               | Allowed Values  | Comment                                                                                              |
 | ----------------------------------------- | --------------- | ---------------------------------------------------------------------------------------------------  |
 | SR00RPA01:START\_CONT\_ACQUISITION\_CMD   | 1               | Start a continuous acquisition. After a trigger, the device will rearm and wait for another trigger. |
@@ -70,6 +71,7 @@ This paragraph assumes you're running the IOC from RedPitayaTestApp.
 | SR00RPA01:RESET\_ACQUISITION\_CMD     | 1               | Resets all acquisition parameters (trigger source, trigger level, decimation, ...) and stops the acquisition. |
 
 **Trigger related records:**
+
 | Record Name                   | Allowed Values  | Comment                                                                                              |
 | ------------------------------| --------------- | ---------------------------------------------------------------------------------------------------  |
 | SR00RPA01:TRIGGER\_SRC\_CMD   | DISABLED  </br> NOW </br> CH1\_PE </br> CH1\_NE </br> CH2\_PE </br> CH2\_NE </br> EXT\_PE </br> EXT\_NE </br> AWG\_PE </br> AWG\_NE |-> Trigger is disabled </br> -> Trigger triggered now (immediately) <br/> -> Trigger set to Channel 1 threshold positive edge </br> -> Trigger set to Channel 1 threshold negative edge </br> -> Trigger set to Channel 2 threshold positive edge </br> -> Trigger set to Channel 2 threshold negative edge </br> -> Trigger set to external trigger positive edge (DIO0\_P pin) </br> -> Trigger set to external trigger negative edge (DIO0\_P pin) </br> -> Trigger set to arbitrary wave generator application positive edge <br/> ->   | Trigger set to arbitrary wave generator application negative edge |
@@ -78,6 +80,7 @@ This paragraph assumes you're running the IOC from RedPitayaTestApp.
 | SR00RPA01:TRIGGER\_HYST\_SP     | 0 <= *hyst* <= 1  | Trigger hysteresis in volts. |
 
 **Data acquisitions configuration records:**
+
 | Record Name                               | Allowed Values  | Comment                                                                                              |
 | ----------------------------------------- | --------------- | ---------------------------------------------------------------------------------------------------  |
 | SR00RPA01:DECIMATION\_CMD | 1, 8, 64, 1024, 8192, 65536 | Input data decimation values |
@@ -85,29 +88,34 @@ This paragraph assumes you're running the IOC from RedPitayaTestApp.
 | SR00RPA01:AVERAGING\_CMD | Off, On | Enable or disable averaging |
 
 **Per-channel configuration records:**
+
 | Record Name                               | Allowed Values  | Comment                                                                                              |
 | ----------------------------------------- | --------------- | ---------------------------------------------------------------------------------------------------  |
 | SR00RPA01:CHANNEL\_IN\_01\_GAIN\_CMD | Low, High | Sets the acquire gain state. The gain should be set to the same value as it is set on the Red Pitaya hardware by the LV/HV gain jumpers. Low = LV = 1V; High = HV = 20V. |
 | SR00RPA01:CHANNEL\_IN\_02\_GAIN\_CMD | Low, High | Same as for channel 1. |
 
 **Data reading records:**
+
 | Record Name                               | Comment                                                                                              |
 | ----------------------------------------- | ---------------------------------------------------------------------------------------------------  |
 | SR00RPA01:CHANNEL\_IN\_01\_MONITOR | Read the data acquired on channel 1 |
 | SR00RPA01:CHANNEL\_IN\_02\_MONITOR | Read the data acquired on channel 2 |
 
 **Digital pins related records:**
+
 | Record Name                               | Allowed Values  | Comment                                                                                              |
 | ----------------------------------------- | --------------- | ---------------------------------------------------------------------------------------------------  |
 | SR00RPA01:DIGITAL\_<N,P>\_<0...7>\_DIR\_CMD | Input, Output | Direction of the digital pin. |
 | SR00RPA01:DIGITAL\_<N,P>\_<0...7>\_STATE\_CMD | Low, High | State of the digital pin. |
 
 **LEDs related records:** 
+
 | Record Name                               | Allowed Values  | Comment                                                                                              |
 | ----------------------------------------- | --------------- | ---------------------------------------------------------------------------------------------------  |
 | SR00RPA01:LED<0...7>\_STATE\_CMD | Off, On | State of the LED. |
 
 **Analog pins related records:**
+
 | Record Name                               | Allowed Values  | Comment                                                                                              |
 | ----------------------------------------- | --------------- | ---------------------------------------------------------------------------------------------------  |
 | SR00RPA01:ANALOG\_OUT\_<0...3>\_VOLT\_SP  | 0 <= *output* <= 1.8 | Set the voltage on anaglog pin to *output* volts. |
