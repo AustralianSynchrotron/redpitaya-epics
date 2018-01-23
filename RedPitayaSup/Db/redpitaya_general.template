@@ -478,8 +478,8 @@ record (bo, "$(DEVICE):CHANNEL_IN_01_GAIN_CMD") {
    field (OUT,  "@asyn($(PORT), 0, 0.0) ACQGAIN")
    
    field (VAL,  "0")
-   field (ZNAM, "LOW")
-   field (ONAM, "HIGH")
+   field (ZNAM, "Low")
+   field (ONAM, "High")
 }
 
 # Acquisition source gain for channel 2
@@ -492,8 +492,8 @@ record (bo, "$(DEVICE):CHANNEL_IN_02_GAIN_CMD") {
    field (OUT,  "@asyn($(PORT), 1, 0.0) ACQGAIN")
    
    field (VAL,  "0")
-   field (ZNAM, "LOW")
-   field (ONAM, "HIGH")
+   field (ZNAM, "Low")
+   field (ONAM, "High")
 }
 
 # Acquisition source gain for channel 1
@@ -506,8 +506,8 @@ record (bi, "$(DEVICE):CHANNEL_IN_01_GAIN_STATUS") {
    field (INP,  "@asyn($(PORT), 0, 0.0) ACQGAIN")
    
    field (VAL,  "0")
-   field (ZNAM, "LOW")
-   field (ONAM, "HIGH")
+   field (ZNAM, "Low")
+   field (ONAM, "High")
    
    field (FLNK, "$(DEVICE):CHANNEL_IN_02_GAIN_STATUS")
 }
@@ -522,8 +522,8 @@ record (bi, "$(DEVICE):CHANNEL_IN_02_GAIN_STATUS") {
    field (INP,  "@asyn($(PORT), 1, 0.0) ACQGAIN")
    
    field (VAL,  "0")
-   field (ZNAM, "LOW")
-   field (ONAM, "HIGH")
+   field (ZNAM, "Low")
+   field (ONAM, "High")
    
    field (FLNK, "$(DEVICE):TRIGGER_LEVEL_MONITOR")
 }
