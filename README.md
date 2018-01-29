@@ -133,7 +133,7 @@ caput SR00RPA01:TRIGGER_SRC_CMD EXT_PE
 # Every 1024th point
 caput SR00RPA01:DECIMATION_CMD 1024
 
-# Stop acquisition
+# Start acquisition
 caput SR00RPA01:START_CONT_ACQUISITION_CMD 1
 
 # Plot the data somehow by reading the wavefrom from 
