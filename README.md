@@ -128,37 +128,51 @@ Manually trigger and rearm after each trigger.:
 # Reset acquisition config. This sets trigger source to DISABLED
 caput SR00RPA01:RESET_ACQ_CMD 1
 
-# Start continuous acquisition 
-caput SR00RPA01:START_CONT_ACQ_CMD 1
+# External positive edge trigger
+caput SR00RPA01:ACQ_TRIGGER_SRC_CMD Now
 
-# Until there is a trigger buffer will keep getting overwritten
-# Trigger manually
-caput SR00RPA01:ACQ_TRIGGER_SRC_CMD NOW
+# Start continuous acquisition 
+caput SR00RPA01:START_SS_ACQ_CMD 1
 
 # Plot the data somehow by reading the waveform 
-caget SR00RPA01:IN1__DATA_MONITOR
+caget SR00RPA01:IN1_DATA_MONITOR
+
+# Stop acquisition
+caput SR00RPA01:STOP_ACQ_CMD 1
 
 ```
 ### Data Generation
+
 **Output enable/disable**
+
 | Record Name                               | Allowed Values  | Comment                                                                                              |
 | ----------------------------------------- | --------------- | ---------------------------------------------------------------------------------------------------  |
 | SR00RPA01:OUT<1,2>\_ENABLE\_CMD | Enable, Disable | Enable/disable output channel 1 or 2. |
 | SR00RPA01:OUT\_RESET\_CMD | 1 | Reset data generation configuration. |
 
 **Output trigger**
+
 | Record Name                               | Allowed Values  | Comment                                                                                              |
 | ----------------------------------------- | --------------- | ---------------------------------------------------------------------------------------------------  |
 | SR00RPA01:OUT\_SS\_CHANNEL\_CMD | Channel 1, Channel 2, Both Channels | Which output channel should be triggered with a single shot trigger. |
 | SR00RPA01:OUT\_SS\_TRIGGER\_CMD | 1 | Trigger single shot on selected output channels. |
 | SR00RPA01:OUT<1,2>\_TRIGGER\_SRC\_CMD | Internal, EXT_PE, EXT_NE, Gated Burst | Select a trigger for output channel 1 or 2. |
+
 **Signal generation**
+
 | Record Name                               | Allowed Values  | Comment                                                                                              |
 | ----------------------------------------- | --------------- | ---------------------------------------------------------------------------------------------------  |
-| SR00RPA01:OUT<1,2>\_AMP\_SP | 0 <= *amplitude* <= 1 | Generated signal amplitude in V for output channel 1 or 2.
-| SR00RPA01:OUT<1,2>\_OFFSET\_SP | -1 <= *offset* <= 1 | Generated signal DC offset in V for output channel 1 or 2.
-| SR00RPA01:OUT<1,2>\_FREQ\_SP | 0 <= *frequency* <= 62.5E6 | Signal frequency for output channel 1 or 2.
-| SR00RPA01:OUT<1,2>\_PHASE\_SP | 0 <= *phase* <= 360 | Signal phase in degrees for output channel 1 or 2.
+| SR00RPA01:OUT<1,2>\_WAVEFORM\_TYPE\_CMD | Sine, Square, Triangle, Ramp Up, Ramp Down, DC, PWM, Arbitrary | Generated signal waveform type for output channel 1 or 2.
+| SR00RPA01:OUT<1,2>\_AMP\_SP | 0 <= *amplitude* <= 1 | Generated signal amplitude in V.
+| SR00RPA01:OUT<1,2>\_OFFSET\_SP | -1 <= *offset* <= 1 | Generated signal DC offset in V.
+| SR00RPA01:OUT<1,2>\_FREQ\_SP | 0 <= *frequency* <= 62.5E6 | Signal frequency in Hz.
+| SR00RPA01:OUT<1,2>\_PHASE\_SP | 0 <= *phase* <= 360 | Signal phase in degrees.
+| SR00RPA01:OUT<1,2>\_DUTY\_CYCLE\_SP | 0 <= *duty cycle* <= 100 | If PWM waveform type is selected this is a duty cycle in percentage.
+| SR00RPA01:OUT<1,2>\_GEN\_MODE\_CMD | Continuous, Burst | Waveform generation mode.
+| SR00RPA01:OUT<1,2>\_BURST\_COUNT\_SP | -1 <= count <= 50000 | Number of generated waveforms in a burst. If -1 a continuous signal will be generated.
+| SR00RPA01:OUT<1,2>\_BURST\_REPS\_SP | -1 <= repetitions <= 50000 | Number of generated bursts. If -1, infinite bursts will be generated.
+| SR00RPA01:OUT<1,2>\_BURST\_PERIOD\_SP | 1 <= period <= 500000000 | Time/period of one burst in micro seconds. Period must be equal or greater then the time of one burst. If it is greater than the difference will be the delay between two consequential bursts.
+| SR00RPA01:OUT<1,2>\_DATA\_SP | A waveform of [-1.1, 1.1] | Arbitrary waveform containing 16354 elements.
 
 
 ### Analog and Digital Pins
