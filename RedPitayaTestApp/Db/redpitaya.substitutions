@@ -1,26 +1,34 @@
-# $File: //ASP/tec/daq/RedPitaya/trunk/RedPitayaTestApp/Db/redpitaya.substitutions $
-# $Revision: #2 $
-# $DateTime: 2017/06/05 10:06:58 $
-# Last checked in by: $Author: pozara $
-#
 # Description
 # Substitution file for RedPitaya.
 #
-# Copyright (c) 2016 Australian Synchrotron
+# Copyright (c) 2018  Australian Synchrotron
 #
-# This library is free software; you can redistribute it and/or
-# modify it under the terms of the GNU Lesser General Public
-# Licence as published by the Free Software Foundation; either
-# version 2.1 of the Licence, or (at your option) any later version.
-#
-# This library is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-# Lesser General Public Licence for more details.
-#
-# You should have received a copy of the GNU Lesser General Public
-# Licence along with this library; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+# All rights reserved.
+# 
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+# 
+# * Redistributions of source code must retain the above copyright notice, this
+#   list of conditions and the following disclaimer.
+# 
+# * Redistributions in binary form must reproduce the above copyright notice,
+#   this list of conditions and the following disclaimer in the documentation
+#   and/or other materials provided with the distribution.
+# 
+# * Neither the name of the copyright holder nor the names of its
+#   contributors may be used to endorse or promote products derived from
+#   this software without specific prior written permission.
+# 
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 # Contact details:
 # andraz.pozar@synchrotron.org.au
@@ -30,28 +38,35 @@
 file "db/redpitaya_general.template"
 {
    pattern  {DEVICE,    PORT}
-            {SR00RPA01, RP01}
+            {SR00RPA01, RP  }
 }
+
+file "db/redpitaya_channel.template"
+{
+    pattern {DEVICE,     PORT,   CHANNEL,   ADDR}
+            {SR00RPA01,  RP,     1,         0   }
+            {SR00RPA01,  RP,     2,         1   }
+}   
 
 file "db/redpitaya_digital_pin.template"
 {
    pattern  {DEVICE,    PORT, PIN}
-            {SR00RPA01, RP01, 0  }
-            {SR00RPA01, RP01, 1  }
-            {SR00RPA01, RP01, 2  }
-            {SR00RPA01, RP01, 3  }
-            {SR00RPA01, RP01, 4  }
-            {SR00RPA01, RP01, 5  }
-            {SR00RPA01, RP01, 6  }
-            {SR00RPA01, RP01, 7  }
+            {SR00RPA01, RP,   0  }
+            {SR00RPA01, RP,   1  }
+            {SR00RPA01, RP,   2  }
+            {SR00RPA01, RP,   3  }
+            {SR00RPA01, RP,   4  }
+            {SR00RPA01, RP,   5  }
+            {SR00RPA01, RP,   6  }
+            {SR00RPA01, RP,   7  }
 }
 
 file "db/redpitaya_analog_pin.template"
 {
    pattern  {DEVICE,    PORT, PIN}
-            {SR00RPA01, RP01, 0  }
-            {SR00RPA01, RP01, 1  }
-            {SR00RPA01, RP01, 2  }
-            {SR00RPA01, RP01, 3  }
+            {SR00RPA01, RP,   0  }
+            {SR00RPA01, RP,   1  }
+            {SR00RPA01, RP,   2  }
+            {SR00RPA01, RP,   3  }
 }
             

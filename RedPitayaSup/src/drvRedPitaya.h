@@ -1,10 +1,5 @@
-/* $File: //ASP/tec/daq/RedPitaya/trunk/RedPitayaSup/src/drvRedPitaya.h $
- * $Revision: #2 $
- * $DateTime: 2017/06/05 10:06:58 $
- * Last checked in by: $Author: pozara $
- *
- * Description:
- * This is a driver support to be used with an on board IOC for
+/* Description:
+ * This is an ASYN port driver to be used with an on board IOC for
  * RedPitaya.
  *
  * Copyright (c) 2018  Australian Synchrotron
@@ -60,31 +55,61 @@ public:
     * qualifierList which contains list of commands.
     */
    enum Qualifiers {
+     // General info
+     //
      DriverVersion = 0,       // EPICS driver version
-     SourceData,              // 16K float array  1-4 channels
-	  NDigPinDir,					// Direction of N digital pins
-	  PDigPinDir,              // Direction of P digital pins
-	  NDigPinState,            // State of N digital pins
-	  PDigPinState,            // State of P digital pins
-	  LedState,                // State of LEDs
-	  AnalogPinOut,            // Analogue output pin value
-	  AnalogPinIn,             // Analogue input pin value
-	  SingleAcquisitionStart,  // Start acquisition of data after a single trigger
-	  ContAcquisitionStart,    // Start continuous data acquisition
-	  AcquisitionStop,         // Stop acquisition
-	  AcquisitionReset,        // Reset acquisition
-	  AcquisitionStatus,       // Status of the acquisition
-	  Decimation,              // Decimation factor
-	  SamplingRate,            // Sampling rate
-	  Averaging,               // Averaging
-	  TriggerSrc,              // Acquisition trigger
-	  TriggerState,            // Acquisition trigger state
-	  TriggerDelay,            // Acquisition trigger delay
-	  TriggerHysteresis,       // Trigger hysteresis
-	  AcquisitionGain,         // Acquisition source gain 1-4 channels
-	  TriggerLevel,            // Acquisition trigger level
-	  BufferSize,              // Acquisition buffer size
-	  AcquisitionRate,         // Rate of continuous acquisition
+     NDigPinDir,              // Direction of N digital pins
+
+     // Digital pins and LEDs
+     //
+     PDigPinDir,              // Direction of P digital pins
+     NDigPinState,            // State of N digital pins
+     PDigPinState,            // State of P digital pins
+     LedState,                // State of LEDs
+
+     // Analogue pins
+     //
+     AnalogPinOut,            // Analog output pin value
+     AnalogPinIn,             // Analog input pin value
+
+     // Data acquisition on two fast input channels
+     //
+     SingleAcquisitionStart,  // Start acquisition of data after a single trigger
+     ContAcquisitionStart,    // Start continuous data acquisition
+     AcquisitionStop,         // Stop acquisition
+     AcquisitionReset,        // Reset acquisition
+     AcquisitionStatus,       // Status of the acquisition
+     Decimation,              // Decimation factor
+     SamplingRate,            // Sampling rate
+     Averaging,               // Averaging
+     TriggerSrc,              // Acquisition trigger
+     TriggerState,            // Acquisition trigger state
+     TriggerDelay,            // Acquisition trigger delay
+     TriggerHysteresis,       // Trigger hysteresis
+     AcquisitionGain,         // Acquisition source gain 1-4 channels
+     TriggerLevel,            // Acquisition trigger level
+     BufferSize,              // Acquisition buffer size
+     AcquisitionRate,         // Rate of continuous acquisition
+     SourceData,              // 16K float array for 2 input channels
+
+     // Waveform generation on two fast output channels
+     //
+     GenerationReset,         // Reset generation
+     OutputEnabled,           // Enable/disable output
+     SignalAmplitude,         // Output signal amplitude
+     SignalOffset,            // Output signal DC offset
+     SignalFrequency,         // Output signal frequency
+     SignalPhase,             // Output signal phase
+     SignalWaveformType,      // Output signal waveform type
+     PWMDutyCycle,            // PWM duty cycle ratio
+     SignalGenerationMode,    // Signal generation mode (CONTINUOUS, BURST, STREAM
+     SignalBurstCount,        // Number of generated waveforms in a burst
+     SignalBurstRepetitions,  // Number of burst repetitions
+     SignalBurstPeriod,       // Burst period in uS
+     OutputTriggerSrc,        // Output trigger source
+     OutputSSChannel,         // Single shot trigger channel selection
+     OutputSSTrigger,         // Single shot trigger
+     SignalWaveform,          // Arbitrary signal waveform
      NUMBER_QUALIFIERS        // Number of qualifiers - MUST be last
    };
 
@@ -96,13 +121,16 @@ public:
 
    // A function that runs in a separate thread and is acquiring the data
    //
-   void dataAcquisition ();
+   void dataAcquisition();
 
    asynStatus readInt32 (asynUser* pasynUser, epicsInt32* value);
    asynStatus writeInt32 (asynUser* pasynUser, epicsInt32 value);
 
    asynStatus readFloat64 (asynUser* pasynUser, epicsFloat64* value);
    asynStatus writeFloat64 (asynUser* pasynUser, epicsFloat64 value);
+
+   asynStatus writeFloat32Array(asynUser *pasynUser, epicsFloat32 *value, size_t nElements);
+   asynStatus readFloat32Array(asynUser *pasynUser, epicsFloat32 *value, size_t nElements, size_t *nIn);
 
 private:
    static const char* qualifierImage (Qualifiers qualifer);
@@ -122,9 +150,13 @@ private:
 
    int indexList [NUMBER_QUALIFIERS];   // used by asynPortDriver
    char full_name [80];
-   int is_initialised;                  // Device found, but init failed.
+   int is_initialised;                  // Device found, but initialisation failed.
    bool acquiring;                      // Is acquiring data
    double acquisitionSleep;             // Continuous data acquisition rate
+   epicsInt32 ssChannelSelected;        // Selected channels to be triggered as a single shot
+   //int inTriggerSource;                 // Trigger source set in the EPICS database
+   int out1TriggerSource;               // Trigger source for output 1
+   int out2TriggerSource;               // Trigger source for output 2
 
 };
 

@@ -1,14 +1,10 @@
-# $File: //ASP/tec/daq/RedPitaya/trunk/RedPitayaSup/Db/redpitaya_analog_pin.template $
-# $Revision: #2 $
-# $DateTime: 2017/06/05 10:06:58 $
-# Last checked in by: $Author: pozara $
-#
 # Description:
+# Analog pin configuration and control
 #
 # Formal template parameters:
 # DEVICE - base PV name, e.g. SR08FPS01
-# PORT   - the ASYN port, e.g. "L108".
-# PIN    - Pin number: 0-3
+# PORT   - asyn port name, e.g. "RP".
+# PIN    - pin number: 0-3
 #
 # Copyright (c) 2018  Australian Synchrotron
 #
@@ -44,7 +40,7 @@
 # 800 Blackburn Road, Clayton, Victoria 3168, Australia.
 #
 
-record (ao, "$(DEVICE):ANALOG_OUT_$(PIN)_VOLT_SP") {
+record (ao, "$(DEVICE):ANALOG_OUT$(PIN)_VOLT_SP") {
    field (DESC, "Analog pin $(PIN) voltage SP")
    field (SCAN, "Passive")
    field (DTYP, "asynFloat64")
@@ -58,7 +54,7 @@ record (ao, "$(DEVICE):ANALOG_OUT_$(PIN)_VOLT_SP") {
    field (EGU,  "V")
 }
 
-record (ai, "$(DEVICE):ANALOG_OUT_$(PIN)_VOLT_MONITOR") {
+record (ai, "$(DEVICE):ANALOG_OUT$(PIN)_VOLT_MONITOR") {
    field (DESC, "Analog output pin $(PIN) voltage monitor")
    field (SCAN, "1 second")
    field (DTYP, "asynFloat64")
@@ -72,10 +68,10 @@ record (ai, "$(DEVICE):ANALOG_OUT_$(PIN)_VOLT_MONITOR") {
    field (HHSV, "MAJOR")
    field (LOPR, "0.0")
    field (HOPR, "1.8")
-   field (FLNK, "$(DEVICE):ANALOG_IN_$(PIN)_VOLT_MONITOR")
+   field (FLNK, "$(DEVICE):ANALOG_IN$(PIN)_VOLT_MONITOR")
 }
 
-record (ai, "$(DEVICE):ANALOG_IN_$(PIN)_VOLT_MONITOR") {
+record (ai, "$(DEVICE):ANALOG_IN$(PIN)_VOLT_MONITOR") {
    field (DESC, "Analog input pin $(PIN) voltage monitor")
    field (SCAN, "Passive")
    field (DTYP, "asynFloat64")

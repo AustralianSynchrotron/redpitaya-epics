@@ -12,12 +12,13 @@ dbLoadDatabase("dbd/RedPitayaTest.dbd",0,0)
 RedPitayaTest_registerRecordDeviceDriver(pdbbase) 
 
 RedPitaya_Initialise (4)
-RedPitaya_Configure ("RP01")
+RedPitaya_Configure ("RP")
 
 ## Load record instances
 dbLoadTemplate("db/redpitaya.substitutions")
 
 cd ${TOP}/iocBoot/${IOC}
+
 iocInit()
 
 # end

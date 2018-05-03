@@ -1,0 +1,564 @@
+# Description:
+# Template for per-channel functionality.
+#
+# Formal template parameters:
+# DEVICE  - base PV name, e.g. SR0ORPA01
+# CHANNEL - channel number: 1 or 2
+# PORT    - asyn port name, e.g. "RP"
+# ADDR    - asyn address: 0 or 1
+#
+# Copyright (c) 2018  Australian Synchrotron
+#
+# All rights reserved.
+# 
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+# 
+# * Redistributions of source code must retain the above copyright notice, this
+#   list of conditions and the following disclaimer.
+# 
+# * Redistributions in binary form must reproduce the above copyright notice,
+#   this list of conditions and the following disclaimer in the documentation
+#   and/or other materials provided with the distribution.
+# 
+# * Neither the name of the copyright holder nor the names of its
+#   contributors may be used to endorse or promote products derived from
+#   this software without specific prior written permission.
+# 
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+# Contact details:
+# andraz.pozar@synchrotron.org.au
+# 800 Blackburn Road, Clayton, Victoria 3168, Australia.
+#
+
+# Data monitor
+#
+record (waveform, "$(DEVICE):IN$(CHANNEL)_DATA_MONITOR") {
+   field (DESC, "In channel $(CHANNEL) data")
+   field (SCAN, "I/O Intr")
+   field (DTYP, "asynFloat32ArrayIn")
+   field (INP,  "@asyn($(PORT),$(ADDR),0.0) DATA")
+   field (FTVL, "FLOAT")
+   field (NELM, "16354")
+   field (EGU,  "V")
+   field (PREC, "5")
+   field (LOPR, "-20.0")
+   field (HOPR, "20.0")
+}
+
+# Acquisition source gain
+#
+record (bo, "$(DEVICE):IN$(CHANNEL)_GAIN_CMD") {
+   field (DESC, "In channel $(CHANNEL) gain")
+   field (SCAN, "Passive")
+   
+   field (DTYP, "asynInt32")
+   field (OUT,  "@asyn($(PORT), $(ADDR), 0.0) ACQGAIN")
+   
+   field (VAL,  "0")
+   field (ZNAM, "Low")
+   field (ONAM, "High")
+}
+
+# Acquisition source gain status
+#
+record (bi, "$(DEVICE):IN$(CHANNEL)_GAIN_STATUS") {
+   field (DESC, "In channel $(CHANNEL) gain")
+   field (SCAN, "1 second")
+   
+   field (DTYP, "asynInt32")
+   field (INP,  "@asyn($(PORT), $(ADDR), 0.0) ACQGAIN")
+   
+   field (VAL,  "0")
+   field (ZNAM, "Low")
+   field (ONAM, "High")
+
+   field (FLNK, "$(DEVICE):OUT$(CHANNEL)_ENABLE_STATUS")
+}
+
+# Disable or enable output
+#
+record (bo, "$(DEVICE):OUT$(CHANNEL)_ENABLE_CMD") {
+   field (DESC, "Enable/disable out channel $(CHANNEL)")
+   field (SCAN, "Passive")
+   field (DTYP, "asynInt32")
+   field (OUT,  "@asyn($(PORT),$(ADDR),0.0) OUTENABLED")
+   field (ZNAM, "Disable")
+   field (ONAM, "Enable")
+}
+
+# Disable or enable output status
+#
+record (bi, "$(DEVICE):OUT$(CHANNEL)_ENABLE_STATUS") {
+   field (DESC, "Out channel $(CHANNEL) enabled/disabled")
+   field (SCAN, "Passive")
+   field (DTYP, "asynInt32")
+   field (INP,  "@asyn($(PORT),$(ADDR),0.0) OUTENABLED")
+   field (ZNAM, "Disabled")
+   field (ONAM, "Enabled")
+
+   field (FLNK, "$(DEVICE):OUT$(CHANNEL)_AMP_MONITOR")
+}
+
+# Set amplitude
+#
+record (ao, "$(DEVICE):OUT$(CHANNEL)_AMP_SP") {
+   field (DESC, "Out channel $(CHANNEL) signal amplitude")
+   field (SCAN, "Passive")
+
+   field (DTYP, "asynFloat64")
+   field (OUT,  "@asyn($(PORT) $(ADDR) 1.0) SIGAMP")
+   field (EGU,  "V")
+   field (PREC, "4")
+
+   field (LOPR, "0.0")
+   field (HOPR, "1.0")
+   field (DRVL, "0.0")
+   field (DRVH, "1.0")
+}
+
+# Amplitude monitor
+#
+record (ai, "$(DEVICE):OUT$(CHANNEL)_AMP_MONITOR") {
+   field (DESC, "Out channel $(CHANNEL) signal amplitude")
+   field (SCAN, "Passive")
+
+   field (DTYP, "asynFloat64")
+   field (INP,  "@asyn($(PORT) $(ADDR) 1.0) SIGAMP")
+   field (EGU,  "V")
+   field (PREC, "4")
+
+   field (LOPR, "0.0")
+   field (HOPR, "1.0")
+
+   field (FLNK, "$(DEVICE):OUT$(CHANNEL)_OFFSET_MONITOR")
+}
+
+# Set DC offset
+#
+record (ao, "$(DEVICE):OUT$(CHANNEL)_OFFSET_SP") {
+   field (DESC, "Out channel $(CHANNEL) signal offset")
+   field (SCAN, "Passive")
+
+   field (DTYP, "asynFloat64")
+   field (OUT,  "@asyn($(PORT) $(ADDR) 1.0) SIGOFFSET")
+   field (EGU,  "V")
+   field (PREC, "4")
+
+   field (LOPR, "-1.0")
+   field (HOPR, "1.0")
+   field (DRVL, "-1.0")
+   field (DRVH, "1.0")
+}
+
+# DC offset monitor
+#
+record (ai, "$(DEVICE):OUT$(CHANNEL)_OFFSET_MONITOR") {
+   field (DESC, "Out channel $(CHANNEL) signal offset")
+   field (SCAN, "Passive")
+
+   field (DTYP, "asynFloat64")
+   field (INP,  "@asyn($(PORT) $(ADDR) 1.0) SIGOFFSET")
+   field (EGU,  "V")
+   field (PREC, "4")
+
+   field (LOPR, "-1.0")
+   field (HOPR, "1.0")
+
+   field (FLNK, "$(DEVICE):OUT$(CHANNEL)_FREQ_MONITOR")
+}
+
+# Set frequency
+#
+record (ao, "$(DEVICE):OUT$(CHANNEL)_FREQ_SP") {
+   field (DESC, "Out channel $(CHANNEL) signal frequency")
+   field (SCAN, "Passive")
+
+   field (DTYP, "asynFloat64")
+   field (OUT,  "@asyn($(PORT) $(ADDR) 1.0) SIGFREQ")
+   field (EGU,  "Hz")
+   field (PREC, "1")
+
+   field (LOPR, "0.0")
+   field (HOPR, "62.5e6")
+   field (DRVL, "0.0")
+   field (DRVH, "62.5e6")
+
+   field (ADEL, "0.1")
+   field (MDEL, "0.1")
+}
+
+# Frequency monitor
+#
+record (ai, "$(DEVICE):OUT$(CHANNEL)_FREQ_MONITOR") {
+   field (DESC, "Out channel $(CHANNEL) signal frequency")
+   field (SCAN, "Passive")
+
+   field (DTYP, "asynFloat64")
+   field (INP,  "@asyn($(PORT) $(ADDR) 1.0) SIGFREQ")
+   field (EGU,  "Hz")
+   field (PREC, "1")
+
+   field (ADEL, "0.1")
+   field (MDEL, "0.1")
+
+   field (LOPR, "0.0")
+   field (HOPR, "62.5e6")
+
+   field (FLNK, "$(DEVICE):OUT$(CHANNEL)_PHASE_MONITOR")
+}
+
+# Set phase
+#
+record (ao, "$(DEVICE):OUT$(CHANNEL)_PHASE_SP") {
+   field (DESC, "Out channel $(CHANNEL) signal phase")
+   field (SCAN, "Passive")
+
+   field (DTYP, "asynFloat64")
+   field (OUT,  "@asyn($(PORT) $(ADDR) 1.0) SIGPHASE")
+   field (EGU,  "deg")
+   field (PREC, "1")
+
+   field (LOPR, "0.0")
+   field (HOPR, "360.0")
+   field (DRVL, "0.0")
+   field (DRVH, "360.0")
+
+   field (ADEL, "0.1")
+   field (MDEL, "0.1")
+}
+
+# Phase monitor
+#
+record (ai, "$(DEVICE):OUT$(CHANNEL)_PHASE_MONITOR") {
+   field (DESC, "Out channel $(CHANNEL) signal phase")
+   field (SCAN, "Passive")
+
+   field (DTYP, "asynFloat64")
+   field (INP,  "@asyn($(PORT) $(ADDR) 1.0) SIGPHASE")
+   field (EGU,  "deg")
+   field (PREC, "1")
+
+   field (ADEL, "0.1")
+   field (MDEL, "0.1")
+
+   field (LOPR, "0.0")
+   field (HOPR, "360.0")
+
+   field (FLNK, "$(DEVICE):OUT$(CHANNEL)_DUTY_CYCLE_MONITOR")
+}
+
+# Set duty cycle
+#
+record (ao, "$(DEVICE):OUT$(CHANNEL)_DUTY_CYCLE_SP") {
+   field (DESC, "Out channel $(CHANNEL) duty cycle")
+   field (SCAN, "Passive")
+
+   field (DTYP, "asynFloat64")
+   field (OUT,  "@asyn($(PORT) $(ADDR) 1.0) DUTYCYCLE")
+   field (PREC, "2")
+
+   field (LOPR, "0")
+   field (HOPR, "100")
+   field (DRVL, "0")
+   field (DRVH, "100")
+}
+
+# Duty cycle monitor
+#
+record (ai, "$(DEVICE):OUT$(CHANNEL)_DUTY_CYCLE_MONITOR") {
+   field (DESC, "Out channel $(CHANNEL) duty cycle")
+   field (SCAN, "Passive")
+
+   field (DTYP, "asynFloat64")
+   field (INP,  "@asyn($(PORT) $(ADDR) 1.0) DUTYCYCLE")
+   field (PREC, "2")
+
+   field (LOPR, "0")
+   field (HOPR, "100")
+
+   field (FLNK, "$(DEVICE):OUT$(CHANNEL)_WAVEFORM_TYPE_STATUS")
+}
+
+# Set signal waveform type
+#
+record (mbbo, "$(DEVICE):OUT$(CHANNEL)_WAVEFORM_TYPE_CMD") {
+   field (DESC, "Out channel $(CHANNEL) waveform type")
+   field (SCAN, "Passive")
+   field (DTYP, "asynInt32")
+   field (OUT,  "@asyn($(PORT), $(ADDR), 0.0) WFTYPE")
+   
+   field (ZRST, "Sine")
+   field (ZRVL, "0")
+
+   field (ONST, "Square")
+   field (ONVL, "1")
+
+   field (TWST, "Triangle")
+   field (TWVL, "2")
+
+   field (THST, "Ramp Up")
+   field (THVL, "3")
+
+   field (FRST, "Ramp Down")
+   field (FRVL, "4")
+
+   field (FVST, "DC")
+   field (FVVL, "5")
+
+   field (SXST, "PWM")
+   field (SXVL, "6")
+
+   field (SVST, "Arbitrary")
+   field (SVVL, "7")
+
+   field (UNSV, "INVALID")
+}
+
+# Signal waveform type status
+#
+record (mbbi, "$(DEVICE):OUT$(CHANNEL)_WAVEFORM_TYPE_STATUS") {
+   field (DESC, "Out channel $(CHANNEL) waveform type")
+   field (SCAN, "Passive")
+   field (DTYP, "asynInt32")
+   field (INP,  "@asyn($(PORT), $(ADDR), 0.0) WFTYPE")
+   
+   field (ZRST, "Sine")
+   field (ZRVL, "0")
+
+   field (ONST, "Square")
+   field (ONVL, "1")
+
+   field (TWST, "Triangle")
+   field (TWVL, "2")
+
+   field (THST, "Ramp Up")
+   field (THVL, "3")
+
+   field (FRST, "Ramp Down")
+   field (FRVL, "4")
+
+   field (FVST, "DC")
+   field (FVVL, "5")
+
+   field (SXST, "PWM")
+   field (SXVL, "6")
+
+   field (SVST, "Arbitrary")
+   field (SVVL, "7")
+
+   field (UNSV, "INVALID")
+
+   field (FLNK, "$(DEVICE):OUT$(CHANNEL)_GEN_MODE_STATUS")
+}
+
+# Set signal generation mode
+#
+record (mbbo, "$(DEVICE):OUT$(CHANNEL)_GEN_MODE_CMD") {
+   field (DESC, "Out channel $(CHANNEL) generation mode")
+   field (SCAN, "Passive")
+   field (DTYP, "asynInt32")
+   field (OUT,  "@asyn($(PORT), $(ADDR), 0.0) GENMODE")
+   
+   field (ZRST, "Continuous")
+   field (ZRVL, "0")
+
+   field (ONST, "Burst")
+   field (ONVL, "1")
+
+   field (UNSV, "INVALID")
+}
+
+# Signal generation mode
+#
+record (mbbi, "$(DEVICE):OUT$(CHANNEL)_GEN_MODE_STATUS") {
+   field (DESC, "Out channel $(CHANNEL) generation mode")
+   field (SCAN, "Passive")
+   field (DTYP, "asynInt32")
+   field (INP,  "@asyn($(PORT), $(ADDR), 0.0) GENMODE")
+   
+   field (ZRST, "Continuous")
+   field (ZRVL, "0")
+
+   field (ONST, "Burst")
+   field (ONVL, "1")
+
+   field (UNSV, "INVALID")
+
+   field (FLNK, "$(DEVICE):OUT$(CHANNEL)_BURST_COUNT_MONITOR")
+}
+
+# FR Output data
+#
+record (waveform, "$(DEVICE):OUT$(CHANNEL)_DATA_SP") {
+   field (DESC, "Out channel $(CHANNEL) data")
+   field (SCAN, "Passive")
+   field (DTYP, "asynFloat32ArrayOut")
+   field (INP,  "@asyn($(PORT),$(ADDR),0.0) RFDATA")
+   field (FTVL, "FLOAT")
+   field (NELM, "16354")
+   field (EGU,  "V")
+   field (PREC, "5")
+   field (LOPR, "-1.0")
+   field (HOPR, "1.0")
+
+   field (FLNK, "$(DEVICE):OUT$(CHANNEL)_DATA_MONITOR")
+}
+
+# FR Output data monitor
+#
+record (waveform, "$(DEVICE):OUT$(CHANNEL)_DATA_MONITOR") {
+   field (DESC, "Out channel $(CHANNEL) data")
+   field (SCAN, "Passive")
+   field (DTYP, "asynFloat32ArrayIn")
+   field (INP,  "@asyn($(PORT),$(ADDR),0.0) RFDATA")
+   field (FTVL, "FLOAT")
+   field (NELM, "16354")
+   field (EGU,  "V")
+   field (PREC, "5")
+   field (LOPR, "-1.1")
+   field (HOPR, "1.1")
+}
+
+# Set signal burst count
+#
+record (longout, "$(DEVICE):OUT$(CHANNEL)_BURST_COUNT_SP") {
+   field (DESC, "Out channel $(CHANNEL) burst count")
+   field (SCAN, "Passive")
+   
+   field (DTYP, "asynInt32")
+   field (OUT,  "@asyn($(PORT), 0, 0.0) BURSTCNT")
+   
+   field (DRVH, "50000")
+   field (DRVL, "-1")
+}
+
+# Signal burst count
+#
+record (longin, "$(DEVICE):OUT$(CHANNEL)_BURST_COUNT_MONITOR") {
+   field (DESC, "Out channel $(CHANNEL) burst count")
+   field (SCAN, "Passive")
+   
+   field (DTYP, "asynInt32")
+   field (INP,  "@asyn($(PORT), 0, 0.0) BURSTCNT")
+   
+   field (HOPR, "50000")
+   field (LOPR, "-1")
+
+   field (FLNK, "$(DEVICE):OUT$(CHANNEL)_BURST_REPS_MONITOR")
+}
+
+
+# Set signal burst repetitions
+#
+record (longout, "$(DEVICE):OUT$(CHANNEL)_BURST_REPS_SP") {
+   field (DESC, "Out channel $(CHANNEL) burst reps")
+   field (SCAN, "Passive")
+   
+   field (DTYP, "asynInt32")
+   field (OUT,  "@asyn($(PORT), 0, 0.0) BURSTRPT")
+   
+   field (DRVH, "50000")
+   field (DRVL, "-1")
+}
+
+# Signal burst repetitions
+#
+record (longin, "$(DEVICE):OUT$(CHANNEL)_BURST_REPS_MONITOR") {
+   field (DESC, "Out channel $(CHANNEL) burst reps")
+   field (SCAN, "Passive")
+   
+   field (DTYP, "asynInt32")
+   field (INP,  "@asyn($(PORT), 0, 0.0) BURSTRPT")
+   
+   field (HOPR, "50000")
+   field (LOPR, "-1")
+
+   field (FLNK, "$(DEVICE):OUT$(CHANNEL)_BURST_PERIOD_MONITOR")
+}
+
+# Set signal burst period
+#
+record (longout, "$(DEVICE):OUT$(CHANNEL)_BURST_PERIOD_SP") {
+   field (DESC, "Out channel $(CHANNEL) burst period")
+   field (SCAN, "Passive")
+   
+   field (DTYP, "asynInt32")
+   field (OUT,  "@asyn($(PORT), 0, 0.0) BURSTPRD")
+   
+   field (EGU,  "uS")
+   field (DRVL, "1")
+}
+
+# Signal burst period
+#
+record (longin, "$(DEVICE):OUT$(CHANNEL)_BURST_PERIOD_MONITOR") {
+   field (DESC, "Out channel $(CHANNEL) burst period")
+   field (SCAN, "Passive")
+   
+   field (DTYP, "asynInt32")
+   field (INP,  "@asyn($(PORT), 0, 0.0) BURSTPRD")
+   
+   field (EGU,  "uS")
+   field (LOPR, "1")
+
+   field (FLNK, "$(DEVICE):OUT$(CHANNEL)_TRIGGER_SRC_STATUS")
+}
+
+# Set signal generation mode
+#
+record (mbbo, "$(DEVICE):OUT$(CHANNEL)_TRIGGER_SRC_CMD") {
+   field (DESC, "Out channel $(CHANNEL) trigger source")
+   field (SCAN, "Passive")
+   field (DTYP, "asynInt32")
+   field (OUT,  "@asyn($(PORT), $(ADDR), 0.0) OUTTRGSRC")
+   
+   field (ZRST, "Internal")
+   field (ZRVL, "0")
+
+   field (ONST, "EXT_PE")
+   field (ONVL, "1")
+
+   field (TWST, "EXT_NE")
+   field (TWVL, "2")
+
+   field (THST, "Gated Burst")
+   field (THVL, "3")
+
+   field (UNSV, "INVALID")
+}
+
+# Signal generation mode
+#
+record (mbbi, "$(DEVICE):OUT$(CHANNEL)_TRIGGER_SRC_STATUS") {
+   field (DESC, "Out channel $(CHANNEL) trigger source")
+   field (SCAN, "Passive")
+   field (DTYP, "asynInt32")
+   field (INP,  "@asyn($(PORT), $(ADDR), 0.0) OUTTRGSRC")
+   
+   field (ZRST, "Internal")
+   field (ZRVL, "0")
+
+   field (ONST, "EXT_PE")
+   field (ONVL, "1")
+
+   field (TWST, "EXT_NE")
+   field (TWVL, "2")
+
+   field (THST, "Gated Burst")
+   field (THVL, "3")
+
+   field (UNSV, "INVALID")
+}
+
+# end

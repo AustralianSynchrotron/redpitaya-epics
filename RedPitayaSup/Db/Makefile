@@ -12,6 +12,7 @@ include $(TOP)/configure/CONFIG
 # databases, templates, substitutions like this
 #
 DB += redpitaya_general.template
+DB += redpitaya_channel.template
 DB += redpitaya_digital_pin.template
 DB += redpitaya_analog_pin.template
 

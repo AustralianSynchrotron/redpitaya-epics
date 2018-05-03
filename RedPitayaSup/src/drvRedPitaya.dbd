@@ -1,3 +1,8 @@
+# $File: //ASP/tec/daq/RedPitaya/trunk/RedPitayaSup/src/drvRedPitaya.dbd $
+# $Revision: #3 $
+# $DateTime: 2017/06/05 10:06:58 $
+# Last checked in by: $Author: pozara $
+#
 
 registrar (RedPitaya_Startup)
 
