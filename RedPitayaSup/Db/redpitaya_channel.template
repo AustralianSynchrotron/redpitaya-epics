@@ -437,7 +437,7 @@ record (longout, "$(DEVICE):OUT$(CHANNEL)_BURST_COUNT_SP") {
    field (SCAN, "Passive")
    
    field (DTYP, "asynInt32")
-   field (OUT,  "@asyn($(PORT), 0, 0.0) BURSTCNT")
+   field (OUT,  "@asyn($(PORT), $(ADDR), 0.0) BURSTCNT")
    
    field (DRVH, "50000")
    field (DRVL, "-1")
@@ -450,7 +450,7 @@ record (longin, "$(DEVICE):OUT$(CHANNEL)_BURST_COUNT_MONITOR") {
    field (SCAN, "Passive")
    
    field (DTYP, "asynInt32")
-   field (INP,  "@asyn($(PORT), 0, 0.0) BURSTCNT")
+   field (INP,  "@asyn($(PORT), $(ADDR), 0.0) BURSTCNT")
    
    field (HOPR, "50000")
    field (LOPR, "-1")
@@ -466,7 +466,7 @@ record (longout, "$(DEVICE):OUT$(CHANNEL)_BURST_REPS_SP") {
    field (SCAN, "Passive")
    
    field (DTYP, "asynInt32")
-   field (OUT,  "@asyn($(PORT), 0, 0.0) BURSTRPT")
+   field (OUT,  "@asyn($(PORT), $(ADDR), 0.0) BURSTRPT")
    
    field (DRVH, "50000")
    field (DRVL, "-1")
@@ -479,7 +479,7 @@ record (longin, "$(DEVICE):OUT$(CHANNEL)_BURST_REPS_MONITOR") {
    field (SCAN, "Passive")
    
    field (DTYP, "asynInt32")
-   field (INP,  "@asyn($(PORT), 0, 0.0) BURSTRPT")
+   field (INP,  "@asyn($(PORT), $(ADDR), 0.0) BURSTRPT")
    
    field (HOPR, "50000")
    field (LOPR, "-1")
@@ -494,7 +494,7 @@ record (longout, "$(DEVICE):OUT$(CHANNEL)_BURST_PERIOD_SP") {
    field (SCAN, "Passive")
    
    field (DTYP, "asynInt32")
-   field (OUT,  "@asyn($(PORT), 0, 0.0) BURSTPRD")
+   field (OUT,  "@asyn($(PORT), $(ADDR), 0.0) BURSTPRD")
    
    field (EGU,  "uS")
    field (DRVL, "1")
@@ -507,7 +507,7 @@ record (longin, "$(DEVICE):OUT$(CHANNEL)_BURST_PERIOD_MONITOR") {
    field (SCAN, "Passive")
    
    field (DTYP, "asynInt32")
-   field (INP,  "@asyn($(PORT), 0, 0.0) BURSTPRD")
+   field (INP,  "@asyn($(PORT), $(ADDR), 0.0) BURSTPRD")
    
    field (EGU,  "uS")
    field (LOPR, "1")
