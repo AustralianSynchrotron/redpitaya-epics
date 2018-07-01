@@ -65,7 +65,7 @@
 //
 #define ARRAY_LENGTH(xx)   ((int) (sizeof (xx) /sizeof (xx [0])))
 
-#define REDPITAYA_DRIVER_VERSION   "2.0"
+#define REDPITAYA_DRIVER_VERSION   "2.1"
 
 #define MAX_NUMBER_OF_ADDRESSES    8      // 0 to 8
 
@@ -243,6 +243,11 @@ void RedPitayaDriver::shutdown(void* arg) {
 
    if (self && self->is_initialised) {
       INFO("RedPitayaDriver: shutting down: %s\n", self->full_name)
+      // If we don't reset the FPGA continues on doing whatever
+      // it has been doing
+      //
+      rp_Reset();
+      rp_Release();
    }
 }
 
@@ -336,7 +341,6 @@ RedPitayaDriver::RedPitayaDriver(const char* port_name) :
 RedPitayaDriver::~RedPitayaDriver() {
    // Clean up a bit
    //
-   rp_Release();
    free (ch1_buffer);
    free (ch2_buffer);
    free (ch1_data);
