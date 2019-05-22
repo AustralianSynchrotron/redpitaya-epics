@@ -41,7 +41,7 @@ For other components you want to cross-compile for RedPitaya you just have to ma
   * CROSS\_COMPILER\_TARGET\_ARCHS = linux-arm
 
 ### Building the Driver Itself
-After you have you EPICS Base and asynDriver ready (cross-compiled on built on the board) it's time to build this driver support. It's designed to be built on the board itself, so begin by copying it to RedPitaya. Once this is done, simply modify the $(TOP)/configure/RELEASE file of this module to point to where your EPICS Base and asynDriver are and hit make.
+After you have EPICS Base and asynDriver ready (cross-compiled or built on the board) it's time to build this driver. It's designed to be built on the board itself, so begin by copying it to RedPitaya. Once this is done, simply modify the $(TOP)/configure/RELEASE file of this module to point to where your EPICS Base and asynDriver are and hit make.
 
 ## Running the Test App
 
