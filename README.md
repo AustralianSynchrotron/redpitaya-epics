@@ -13,7 +13,7 @@ It's really quite straight forward. Module consists of an EPICS support library 
 Code has been developed on and tested with [STEMLab 125-14](https://www.redpitaya.com/f130/STEMlab-board) (originally Red Pitaya v1.1) and RedPitaya library version 0.98-685-0759d71. RedPitaya library comes with the image you get on their website. To set it up, follow their [Quick start](http://redpitaya.readthedocs.io/en/latest/quickStart/quickStart.html) manual.
 
 ### EPICS Base
-There are nothing to funky in the code so I believe any EPICS Base > 3.14.12.2 should be fine but it has only been tested with 3.15.5 and 3.16.1.
+There is nothing too funky in the code so I believe any EPICS Base > 3.14.12.2 should be fine but it has only been tested with 3.15.5 and 3.16.1.
 
 ### asynDriver
 Same story as with EPICS Base, but it has only been tested with asynDriver 4.26 and 4.31.
