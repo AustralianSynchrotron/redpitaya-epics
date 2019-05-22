@@ -12,7 +12,9 @@ dbLoadDatabase("dbd/RedPitayaTest.dbd",0,0)
 RedPitayaTest_registerRecordDeviceDriver(pdbbase) 
 
 RedPitaya_Initialise (4)
-RedPitaya_Configure ("RP")
+
+# RedPitaya_Configure (portName, triggerPollingInterval in seconds)
+RedPitaya_Configure ("RP", 0.1)
 
 ## Load record instances
 dbLoadTemplate("db/redpitaya.substitutions")

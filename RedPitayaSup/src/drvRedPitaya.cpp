@@ -65,7 +65,7 @@
 //
 #define ARRAY_LENGTH(xx)   ((int) (sizeof (xx) /sizeof (xx [0])))
 
-#define REDPITAYA_DRIVER_VERSION   "2.1"
+#define REDPITAYA_DRIVER_VERSION   "2.2"
 
 #define MAX_NUMBER_OF_ADDRESSES    8      // 0 to 8
 
@@ -260,7 +260,7 @@ void dataAcquisition(void *drvPvt) {
 
 //------------------------------------------------------------------------------
 //
-RedPitayaDriver::RedPitayaDriver(const char* port_name) :
+RedPitayaDriver::RedPitayaDriver(const char* port_name, const double pollingInterval) :
       asynPortDriver(port_name,              //
                      MAX_NUMBER_OF_ADDRESSES,//
                      NUMBER_QUALIFIERS,      //
@@ -290,6 +290,13 @@ RedPitayaDriver::RedPitayaDriver(const char* port_name) :
    }
 
    snprintf(this->full_name, sizeof(this->full_name), "%s", port_name);
+
+   if (pollingInterval < 0.0) {
+      ERROR("Trigger polling interval needs to be a positive number\n", 0);
+      return;
+   }
+
+   triggerPollingInterval = pollingInterval;
 
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    // Set up asyn parameters.
@@ -400,6 +407,7 @@ void RedPitayaDriver::dataAcquisition() {
       rp_AcqGetTriggerSrc(&currentTriggerSource);
       while (currentTriggerSource != 0 && this->acquiring &&
             inTriggerSource == currentTriggerSource) {
+         epicsThreadSleep(triggerPollingInterval);
          rp_AcqGetTriggerSrc(&currentTriggerSource);
       }
 
@@ -554,10 +562,10 @@ asynStatus RedPitayaDriver::writeInt32(asynUser* pasynUser, epicsInt32 value) {
       rpStatus = rp_DpinSetDirection(rp_dpin_t(N_PIN_OFFSET + addr), rp_pinDirection_t(value));
       break;
    case PDigPinState:
-      rpStatus = rp_DpinSetState(rp_dpin_t(N_PIN_OFFSET + addr), rp_pinState_t(value));
+      rpStatus = rp_DpinSetState(rp_dpin_t(P_PIN_OFFSET + addr), rp_pinState_t(value));
       break;
    case NDigPinState:
-      rpStatus = rp_DpinSetState(rp_dpin_t(P_PIN_OFFSET + addr), rp_pinState_t(value));
+      rpStatus = rp_DpinSetState(rp_dpin_t(N_PIN_OFFSET + addr), rp_pinState_t(value));
       break;
    case LedState:
       rpStatus = rp_DpinSetState(rp_dpin_t(addr), rp_pinState_t(value));
@@ -1241,8 +1249,9 @@ asynStatus RedPitayaDriver::readFloat32Array(asynUser *pasynUser, epicsFloat32 *
 
 // Define argument kinds
 //
-static const iocshArg verbosity_arg = { "Verbosity (0 .. 4)", iocshArgInt };
-static const iocshArg port_name_arg = { "ASYN port name", iocshArgString };
+static const iocshArg verbosity_arg =        { "Verbosity (0 .. 4)", iocshArgInt             };
+static const iocshArg port_name_arg =        { "ASYN port name", iocshArgString              };
+static const iocshArg polling_interval_arg = { "Trigger polling interval", iocshArgDouble    };
 
 //------------------------------------------------------------------------------
 //
@@ -1256,12 +1265,12 @@ static void Call_RedPitaya_Initialise(const iocshArgBuf* args) {
 
 //------------------------------------------------------------------------------
 //
-static const iocshArg * const RedPitaya_Configure_Args[1] = { &port_name_arg, };
+static const iocshArg * const RedPitaya_Configure_Args[2] = { &port_name_arg, &polling_interval_arg};
 
-static const iocshFuncDef RedPitaya_Configure_Func_Def = { "RedPitaya_Configure", 1, RedPitaya_Configure_Args };
+static const iocshFuncDef RedPitaya_Configure_Func_Def = { "RedPitaya_Configure", 2, RedPitaya_Configure_Args };
 
 static void Call_RedPitaya_Configure(const iocshArgBuf* args) {
-   new RedPitayaDriver(args[0].sval);
+   new RedPitayaDriver(args[0].sval, args[1].dval);
 }
 
 //------------------------------------------------------------------------------

@@ -46,7 +46,7 @@
 
 class epicsShareFunc RedPitayaDriver : public asynPortDriver {
 public:
-   explicit RedPitayaDriver (const char* port_name);
+   explicit RedPitayaDriver (const char* port_name, const double pollingInterval = 0.01);
    ~RedPitayaDriver ();
 
    /**
@@ -58,10 +58,10 @@ public:
      // General info
      //
      DriverVersion = 0,       // EPICS driver version
-     NDigPinDir,              // Direction of N digital pins
 
      // Digital pins and LEDs
      //
+     NDigPinDir,              // Direction of N digital pins
      PDigPinDir,              // Direction of P digital pins
      NDigPinState,            // State of N digital pins
      PDigPinState,            // State of P digital pins
@@ -154,9 +154,9 @@ private:
    bool acquiring;                      // Is acquiring data
    double acquisitionSleep;             // Continuous data acquisition rate
    epicsInt32 ssChannelSelected;        // Selected channels to be triggered as a single shot
-   //int inTriggerSource;                 // Trigger source set in the EPICS database
    int out1TriggerSource;               // Trigger source for output 1
    int out2TriggerSource;               // Trigger source for output 2
+   double triggerPollingInterval;       // Interval at which we poll for new trigger status
 
 };
 
