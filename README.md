@@ -128,11 +128,11 @@ Manually trigger and rearm after each trigger.:
 # Reset acquisition config. This sets trigger source to DISABLED
 caput SR00RPA01:RESET_ACQ_CMD 1
 
-# External positive edge trigger
-caput SR00RPA01:ACQ_TRIGGER_SRC_CMD Now
-
 # Start continuous acquisition 
-caput SR00RPA01:START_SS_ACQ_CMD 1
+caput SR00RPA01:START_CONT_ACQ_CMD 1
+
+# Manually fire off a soft internal trigger
+caput SR00RPA01:ACQ_TRIGGER_SRC_CMD NOW
 
 # Plot the data somehow by reading the waveform 
 caget SR00RPA01:IN1_DATA_MONITOR
