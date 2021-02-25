@@ -774,7 +774,7 @@ asynStatus RedPitayaDriver::readInt32(asynUser* pasynUser, epicsInt32* value) {
       break;
    case NDigPinState: {
       rp_pinState_t state;
-      rpStatus = rp_DpinGetState(static_cast<rp_dpin_t> (P_PIN_OFFSET + addr), &state);
+      rpStatus = rp_DpinGetState(static_cast<rp_dpin_t> (N_PIN_OFFSET + addr), &state);
       if (rpStatus == RP_OK) {
          *value = state;
       }
